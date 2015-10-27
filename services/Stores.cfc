@@ -1,12 +1,12 @@
 /**
- * Store.cfc
+ * Stores.cfc
  **/
 component {
 
     import models.Store;
 
     public function init() {
-        variables.fields = 'name,latitude,longitude';
+        variables.fields = 'id,name,latitude,longitude';
         return this;
     }
 
@@ -14,37 +14,39 @@ component {
         return entityLoad("store");
     }
 
-    public array function find(any data) {
+    public array function find(any data = {}) {
         var example = populate(new Store(), data);
 
-        return entityLoadByExample("store", example);
+        return entityLoadByExample(example);
     }
 
-    public array function findOne(any data) {
+    public any function findOne(any data = {}) {
         var example = populate(new Store(), data);
-
-        return entityLoadByExample("store", example, true);
+        
+        return entityLoadByExample(example, true);
     }
 
     public Store function findById(numeric id) {
         return entityLoadByPK("store", id);
     }
 
-    public Store function create(struct data) {
+    public Store function create(any data = {}) {
         var store = populate(entityNew("store"), data);
-        store.dateCreated = now();
+        store.setDateCreated(now());
 
         return store;
     }
 
     public Store function populate(Store store, struct data) {
-
+        
         for(var field in variables.fields) {
-            if(isDefined("data.#field#")) {
-                store[field] = data[field];
+            var setterMethodName = "set#field#";
+
+            if(structKeyExists(data, field) and structKeyExists(store, setterMethodName)) {
+                evaluate("store.#setterMethodName#(data[field])");
             }
         }
-
+        
         return store;
     }
 
@@ -55,5 +57,15 @@ component {
         } catch(Exception e) {
             return false;
         }
+    }
+
+    public boolean function valid(Store store) {
+        return arrayLen(errors(store)) eq 0;
+    }
+
+    public array function errors(Store store) {
+        var errors = [];
+
+        return errors;
     }
 }
