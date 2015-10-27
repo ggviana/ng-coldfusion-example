@@ -8,9 +8,10 @@
 component {
     PageEncoding "utf-8";
 
-    // import models.Store;
+    import models.Store;
 
-    Stores = new services.Store();
+    Stores = new services.Stores();
+    Responder = new lib.Responder();
 
     /**
     * @httpmethod GET
@@ -24,8 +25,10 @@ component {
     * @restpath {id}
     * @id.restargsource path
     */
-    remote Store function show( numeric id ) {
-        var store = Stores.findOne( arguments.id );
+    remote boolean function show() {
+        var store = Stores.findOne( arguments );
+
+        if( isNull( store ) ) Responder.throwNotFoundError();
 
         return store;
     }
@@ -40,9 +43,9 @@ component {
     remote void function create() {
         var store = Stores.create( arguments );
 
-        // if( not Stores.save( store ) ) {
-        //     AppHelper.throwValidationError( Stores, store );
-        // }
+        if( not Stores.save( store ) ) {
+            Responder.throwValidationError();
+        }
     }
 
     /**
@@ -55,14 +58,14 @@ component {
     * @longitude.restargsource form
     */
     remote void function update() {
-        var store = Stores.findOne( arguments.id );
+        var store = Stores.findOne( arguments );
 
-        // if( isNull( store ) ) AppHelper.throw404( Stores );
+        if( isNull( store ) ) Responder.throwNotFoundError();
 
-        // Stores.populate( store, arguments );
+        Stores.populate( store, arguments );
 
-        // if( not Stores.save( store ) ) {
-        //     AppHelper.throwValidationError( Stores, store );
-        // }
+        if( not Stores.save( store ) ) {
+            Responder.throwValidationError();
+        }
     }
 }
