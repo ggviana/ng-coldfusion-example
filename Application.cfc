@@ -3,10 +3,6 @@ component {
     // Application options
     this.name = "ng-coldfusion";
     this.root_dir = getDirectoryFromPath( getCurrentTemplatePath() );
-    this.mappings[ "/controllers" ] = this.root_dir & "controllers/";
-    this.mappings[ "/lib"         ] = this.root_dir & "lib/";
-    this.mappings[ "/models"      ] = this.root_dir & "models/";
-    this.mappings[ "/services"    ] = this.root_dir & "services/";
 
     // ORM options
     this.datasource = "ng-coldfusion";
