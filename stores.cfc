@@ -25,8 +25,8 @@ component {
     * @restpath {id}
     * @id.restargsource path
     */
-    remote boolean function show() {
-        var store = Stores.findOne( arguments );
+    remote boolean function show(numeric id) {
+        var store = Stores.findById( id );
 
         if( isNull( store ) ) Responder.throwNotFoundError();
 

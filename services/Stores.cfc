@@ -26,7 +26,7 @@ component {
         return entityLoadByExample(example, true);
     }
 
-    public Store function findById(numeric id) {
+    public any function findById(numeric id) {
         return entityLoadByPK("store", id);
     }
 
