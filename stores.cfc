@@ -25,7 +25,7 @@ component {
     * @restpath {id}
     * @id.restargsource path
     */
-    remote boolean function show(numeric id) {
+    remote Store function show(numeric id) {
         var store = Stores.findById( id );
 
         if( isNull( store ) ) Responder.throwNotFoundError();
@@ -40,12 +40,14 @@ component {
     * @latitude.restargsource form
     * @longitude.restargsource form
     */
-    remote void function create() {
+    remote any function new(name, latitude, longitude) {
         var store = Stores.create( arguments );
 
         if( not Stores.save( store ) ) {
-            Responder.throwValidationError();
+            Responder.throwValidationError(Stores.errors( store ));
         }
+
+        return store;
     }
 
     /**
@@ -57,7 +59,7 @@ component {
     * @latitude.restargsource form
     * @longitude.restargsource form
     */
-    remote void function update() {
+    remote void function update(numeric id, string name, string latitude, string longitude) {
         var store = Stores.findOne( arguments );
 
         if( isNull( store ) ) Responder.throwNotFoundError();
@@ -65,7 +67,7 @@ component {
         Stores.populate( store, arguments );
 
         if( not Stores.save( store ) ) {
-            Responder.throwValidationError();
+            Responder.throwValidationError(Stores.errors( store ));
         }
     }
 }

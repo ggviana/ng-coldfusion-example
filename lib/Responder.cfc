@@ -3,24 +3,24 @@ component {
 	function throwNotFoundError() {
 		respond({
 			errorCode: 404,
-			content: "Not found"
+			type: "Not found"
 		});
 	}
 
-	function throwValidationError() {
+	function throwValidationError(array errors) {
 		respond({
 			errorCode: 400,
-			content: "Validation error"
+			type: "Validation Error",
+			content: serializeJSON( errors )
 		});
 	}
 
 	private void function respond(struct response) {
-		
-		var error = {
-			errorCode: response.errorCode,
-			type: (isDefined('response.content') ? response.content : "")
-		};
 
-		throw(errorCode = error.errorCode, type = error.type);
+		if(isDefined("response.content")) {
+			throw(errorCode = response.errorCode, type = response.type, detail = response.content);
+		} else {
+			throw(errorCode = response.errorCode, type = response.type);
+		}
 	}
 }
