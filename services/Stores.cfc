@@ -31,26 +31,28 @@ component {
     }
 
     public Store function create(any data = {}) {
-        var store = populate(entityNew("store"), data);
+        var store = populate(new Store(), data);
         store.setDateCreated(now());
 
         return store;
     }
 
-    public Store function populate(Store store, struct data) {
+    public Store function populate(any model, struct data) {
         
         for(var field in variables.fields) {
             var setterMethodName = "set#field#";
 
-            if(structKeyExists(data, field) and structKeyExists(store, setterMethodName)) {
-                evaluate("store.#setterMethodName#(data[field])");
+            if(structKeyExists(data, field) and structKeyExists(model, setterMethodName)) {
+                evaluate("model.#setterMethodName#(data[field])");
             }
         }
         
-        return store;
+        return model;
     }
 
     public boolean function save(Store store) {
+        if(not valid(store)) return false;
+
         try {
             entitySave(store);
             return true;
